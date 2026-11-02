@@ -1,0 +1,8 @@
+{
+  "dialect": "postgresql+asyncpg",
+  "db_host": "db",
+  "db_port": "5432",
+  "db_user": "user",
+  "db_name": "db",
+  "sql_command_echo": true
+}

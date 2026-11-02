@@ -1,0 +1,75 @@
+services:
+  frontend:
+    build:
+      context: services/frontend
+      dockerfile: dockerfile/Dev.Dockerfile
+    ports:
+      - 8092:5173
+    environment:
+      VITE_API_URL: http://127.0.0.1:8090
+    volumes:
+      - ./services/frontend/src/:/app/src/
+      - ./services/frontend/public/:/app/public/
+      - ./services/frontend/index.html:/app/index.html
+      - ./services/frontend/tsconfig.app.json:/app/tsconfig.app.json
+      - ./services/frontend/tsconfig.node.json:/app/tsconfig.node.json
+      - ./services/frontend/tsconfig.json:/app/tsconfig.json
+      - ./services/frontend/vite.config.ts:/app/vite.config.ts
+    entrypoint:
+      - npm
+      - run
+      - dev
+      - --
+      - --host
+      - 0.0.0.0
+
+  app:
+    build:
+      args:
+        EXTRA_GROUPS: "dev"
+    ports:
+      - 8090:5000
+      - 5678:5678
+    environment:
+      DB_NAME: debug_db
+    entrypoint:
+      # - python
+      # - -m
+      # - debugpy
+      # - --listen
+      # - 0.0.0.0:5678
+      # - --wait-for-client
+      # - -m
+      - uvicorn
+      - src.main:app
+      - --reload
+      - --host
+      - 0.0.0.0
+      - --port
+      - "5000"
+    volumes:
+      - ./services/backend/src/:/app/src/
+      - ./services/backend/config.json:/app/config.json
+
+  db:
+    ports:
+      - 8765:5432
+
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    ports:
+      - 6123:80
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@citizix.com
+      - PGADMIN_DEFAULT_PASSWORD_FILE=/run/secrets/pgadmin_pass
+    secrets:
+      - pgadmin_pass
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
+
+volumes:
+  pgadmin_data:
+
+secrets:
+  pgadmin_pass:
+    file: ./secrets/pgadmin

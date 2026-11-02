@@ -1,0 +1,31 @@
+{
+  "configurations": [
+    {
+      "name": "run server",
+      "type": "debugpy",
+      "request": "launch",
+      "module": "uvicorn",
+      "justMyCode": false,
+      "args": [
+        "src.main:app"
+      ]
+    },
+    {
+      "name": "Attach (remote debug)",
+      "type": "debugpy",
+      "request": "attach",
+      "port": 5678,
+      "host": "127.0.0.1",
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}",
+          "remoteRoot": "."
+        },
+        {
+          "localRoot": "${env:VIRTUAL_ENV}/lib/python3.13/site-packages",
+          "remoteRoot": "/app/.venv/lib/python3.14/site-packages"
+        }
+      ]
+    }
+  ]
+}
