@@ -3,16 +3,12 @@ FROM node:24-alpine
 
 WORKDIR /app
 
-# TODO: необходимо скопировать файлы
-# package.json, package-lock.json, которые содержат
-# список зависимостей npm
+# копируем файлы с зависимостями
+COPY package.json package-lock.json ./
 
+# устанавливаем зависимости
+RUN npm install
 
-# TODO: необходимо установить пакеты node_modules
-
-
-# TODO: необходимо модифицировать переменную
-# PATH таким образом, чтобы в начале содержимого
-# переменной PATH была указана директория
-# с бинарниками node_modules/.bin
+# указываем путь до бинарников в папке с зависимостями
+ENV PATH /app/node_modules/.bin:$PATH
 

@@ -32,19 +32,13 @@ COPY src/ ./src
 # обработанный код записывается в директорию /app/dist
 RUN npm run build
 
-# TODO: нужно указать в качестве базового образа для исполнения
-# образ nginx:latest.
-# nginx - reverse-proxy, который позволяет
-# по запросу отдавать файлы или переадресовывать
-# запросы на сервер backend.
-# конфигурация nginx лежит в файле nginx.conf
-
+# указываем образ для исполнения: nginx раздаёт статику и проксирует запросы
+FROM nginx:latest
 
 # создаём директорию для записи логов
 RUN mkdir /var/www \
   && mkdir /var/www/logs
 
-# TODO: в самую последнюю очередь копируем
-# транспилированный код из папки /app/dist слоя сборки
-# в папку для nginx из слоя выполнения. /ush/share/nginx/html
+# копируем собранный код из слоя сборки в папку nginx
+COPY --from=vite-builder /app/dist/ /usr/share/nginx/html/
 
